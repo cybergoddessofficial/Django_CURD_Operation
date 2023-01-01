@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 
 
-from myapp.models import Student, Admin, Category
+from myapp.models import Student, Admin, Category, Product
 from django.core.files.storage import FileSystemStorage
 from django.utils.datastructures import MultiValueDictKeyError
 
@@ -139,10 +139,48 @@ def deletecategory(request,dataid):
     return redirect(displaycategory)
 
 
+def addproduct(request):
+    data=Category.objects.all()
+    if request.method=="POST":
+        Cat=request.POST.get("category")
+        Pro=request.POST.get("pname")
+        Price=request.POST.get("price")
+        Quantity=request.POST.get("quantity")
+        Desc=request.POST.get("pdesc")
+        Image=request.FILES["pic"]
+        obj=Product(Cat=Cat,Pro=Pro,Price=Price,Quantity=Quantity,Desc=Desc,Image=Image)
+        obj.save()
+        return redirect(displayproduct)
+    return render(request,"addproduct.html",{'data':data})
+
+def displayproduct(request):
+    data=Product.objects.all()
+    return render(request,"displayproduct.html",{'data':data})
+
+def editproduct(request,dataid):
+    data = Product.objects.get(id=dataid)
+    data2 = Category.objects.all()
+    if request.method == "POST":
+        Cat = request.POST.get("category")
+        Pro = request.POST.get("pname")
+        Price = request.POST.get("price")
+        Quantity = request.POST.get("quantity")
+        Desc = request.POST.get("pdesc")
+        try:
+            Image = request.FILES['pic']
+            fs = FileSystemStorage()
+            file = fs.save(Image.name, Image)
+        except MultiValueDictKeyError:
+            file = Product.objects.get(id=dataid).Image
+        Product.objects.filter(id=dataid).update(Cat=Cat,Pro=Pro,Price=Price,Quantity=Quantity,Desc=Desc,Image=file)
+        return redirect(displayproduct)
+    return render(request, "editproduct.html", {'data': data,'data2':data2})
 
 
-
-
+def deleteproduct(request,dataid):
+    data = Product.objects.get(id=dataid)
+    data.delete()
+    return redirect(displayproduct)
 
 
 

@@ -17,5 +17,9 @@ urlpatterns = [
     path('displaycategory',views.displaycategory,name="displaycategory"),
     path('editcategory/<int:dataid>', views.editcategory, name="editcategory"),
     path('deletecategory/<int:dataid>', views.deletecategory, name="deletecategory"),
+    path('addproduct',views.addproduct,name="addproduct"),
+    path('displayproduct',views.displayproduct,name="displayproduct"),
+    path('editproduct/<int:dataid>',views.editproduct,name="editproduct"),
+    path('deleteproduct/<int:dataid>',views.deleteproduct,name="deleteproduct")
 
 ]
